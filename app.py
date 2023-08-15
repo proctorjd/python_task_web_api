@@ -1,15 +1,19 @@
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS, cross_origin
 import os, re, datetime
 import db
 from models import ToDo
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 if not os.path.isfile('todos.db'):
 	db.connect()
 
 
 @app.route('/')
+@cross_origin()
 def index():
 	return render_template("index.html")
 
@@ -136,7 +140,7 @@ def deleteRequest(id):
                     'res': updated_tks,
                     'status': '200',
                     'msg': 'Success deleting task by ID!👍😀',
-                    'no_of_books': len(updated_bks)
+                    'no_of_tasks': len(updated_tks)
                 })
     else:
         return jsonify({
